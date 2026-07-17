@@ -1,0 +1,22 @@
+{
+  "name": "@enterprise-agents/contracts",
+  "version": "0.1.0-beta",
+  "private": true,
+  "type": "module",
+  "main": "./dist/contracts.js",
+  "module": "./dist/contracts.js",
+  "types": "./dist/contracts.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/contracts.d.ts",
+      "import": "./dist/contracts.js",
+      "default": "./dist/contracts.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "peerDependencies": {
+    "zod": "4.6.7"
+  }
+}

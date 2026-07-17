@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "declaration": true,
+    "declarationMap": false,
+    "sourceMap": false,
+    "outDir": "./dist",
+    "rootDir": "../../src",
+    "strict": true,
+    "skipLibCheck": true,
+    "emitDecoratorMetadata": false,
+    "experimentalDecorators": false,
+    "paths": {
+      "@/*": ["../../src/modules/*"],
+      "~/*": ["../../src/*"]
+    }
+  },
+  "include": ["../../src/contracts.ts"]
+}
