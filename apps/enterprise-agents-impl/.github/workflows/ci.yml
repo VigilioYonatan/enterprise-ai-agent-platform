@@ -1,0 +1,90 @@
+name: Backend quality, behavior and supply chain
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: backend-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Require lockfile (no floating installs)
+        run: test -s package-lock.json
+      - name: Install pinned dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Biome check
+        run: npm run lint
+      - name: TypeScript check
+        run: npm run typecheck
+      - name: Unit / domain tests
+        run: npm run test:unit
+      - name: Coverage gate
+        run: npm run test:coverage
+      - name: Build
+        run: npm run build
+      - name: BDD behavior (compiled real domain)
+        run: npm run test:bdd
+      - name: Export OpenAPI
+        run: npm run openapi:export
+      - name: Vulnerable dependencies (high+)
+        run: npm audit --omit=dev --audit-level=high
+  postgres-integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_DB: agentops_test
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_only_randomized_in_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U test_user -d agentops_test"
+          --health-interval 5s --health-timeout 3s --health-retries 20
+    env:
+      DATABASE_URL: postgres://test_user:test_only_randomized_in_ci@localhost:5432/agentops_test
+      DATABASE_URL_TEST: postgres://test_user:test_only_randomized_in_ci@localhost:5432/agentops_test
+      OIDC_ISSUER: http://localhost:8888/realms/agentops
+      OIDC_JWKS_URL: http://localhost:8888/realms/agentops/protocol/openid-connect/certs
+      OIDC_AUDIENCE: agentops-api
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: test -s package-lock.json && npm ci --no-audit --no-fund
+      - run: npm run build
+      - name: Apply migrations to disposable real PostgreSQL
+        run: npm run db:migrate
+      - name: Integration tests (real database)
+        run: npm run test:integration
+      - name: Start real API and verify anonymous/malformed JWT
+        run: |
+          npm run start > /tmp/agentops-api.log 2>&1 &
+          echo $! > /tmp/agentops-api.pid
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:3000/health/live >/dev/null; then break; fi
+            sleep 1
+          done
+          curl --fail http://127.0.0.1:3000/health/live
+          E2E_API_BASE_URL=http://127.0.0.1:3000 npm run test:e2e:api
+      - name: Print diagnostics on failure
+        if: failure()
+        run: test ! -f /tmp/agentops-api.log || tail -n 100 /tmp/agentops-api.log
