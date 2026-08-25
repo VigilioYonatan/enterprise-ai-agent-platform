@@ -1,0 +1,5 @@
+export const IDENTITY_CONSTANTS = {
+  MIN_USER_ID_LENGTH: 2,
+  MAX_USER_ID_LENGTH: 128,
+  MAX_EMAIL_LENGTH: 320,
+} as const;
