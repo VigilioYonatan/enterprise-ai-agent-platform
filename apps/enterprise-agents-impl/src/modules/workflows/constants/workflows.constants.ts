@@ -1,0 +1,20 @@
+export const WORKFLOW_CONSTANTS = {
+  STATUSES: ['draft', 'published', 'archived'] as const,
+  NODE_TYPES: [
+    'start',
+    'agent',
+    'condition',
+    'tool',
+    'approval',
+    'output',
+  ] as const,
+  EDGE_BRANCHES: ['true', 'false'] as const,
+  MIN_NAME_LENGTH: 2,
+  MAX_NAME_LENGTH: 120,
+  MAX_NODE_ID_LENGTH: 64,
+  MAX_NODE_LABEL_LENGTH: 120,
+  MAX_NODES: 100,
+  MAX_EDGES: 200,
+  DEFAULT_PAGE_LIMIT: 20,
+  MAX_PAGE_LIMIT: 100,
+} as const;
