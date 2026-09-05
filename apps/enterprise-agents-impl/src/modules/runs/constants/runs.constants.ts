@@ -1,0 +1,23 @@
+export const RUN_CONSTANTS = {
+  STATUSES: [
+    'queued',
+    'running',
+    'waiting_approval',
+    'completed',
+    'failed',
+    'cancelled',
+  ] as const,
+  STEP_STATUSES: ['completed', 'failed'] as const,
+  TERMINAL_STATUSES: ['completed', 'failed', 'cancelled'] as const,
+  ACTIVE_STATUSES: ['queued', 'running', 'waiting_approval'] as const,
+  RESUMABLE_STATUSES: ['failed', 'cancelled'] as const,
+  MAX_IDEMPOTENCY_KEY_LENGTH: 128,
+  MAX_NODE_ID_LENGTH: 64,
+  MAX_EVENT_TYPE_LENGTH: 64,
+  DEFAULT_PAGE_LIMIT: 20,
+  MAX_PAGE_LIMIT: 100,
+  EVENTS_BATCH_LIMIT: 100,
+  SSE_POLL_INTERVAL_MS: 2_000,
+  MAX_RUN_STEPS: 50,
+  WORKER_POLL_INTERVAL_MS: 1_100,
+} as const;
