@@ -1,0 +1,31 @@
+:root {
+  --surface: #ffffff;
+  --surface-muted: #fafafa;
+  --foreground: #171717;
+  --foreground-muted: #666666;
+  --focus: #0070f3;
+  --border: #eaeaea;
+  --accent: #0070f3;
+  --card-bg: #ffffff;
+}
+
+.dark {
+  --surface: #0a0a0a;
+  --surface-muted: #000000;
+  --foreground: #ededed;
+  --foreground-muted: #888888;
+  --focus: #3291ff;
+  --border: #262626;
+  --accent: #0070f3;
+  --card-bg: #0f0f0f;
+}
+
+@theme inline {
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-foreground: var(--foreground);
+  --color-foreground-muted: var(--foreground-muted);
+  --color-border-ui: var(--border);
+  --color-accent-ui: var(--accent);
+  --color-card-bg: var(--card-bg);
+}
