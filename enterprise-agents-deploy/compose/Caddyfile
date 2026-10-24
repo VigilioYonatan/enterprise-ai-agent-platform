@@ -1,0 +1,20 @@
+{$CADDY_SITE_ADDRESS} {
+  encode zstd gzip
+  header {
+    X-Content-Type-Options "nosniff"
+    Referrer-Policy "strict-origin-when-cross-origin"
+    X-Frame-Options "DENY"
+    -Server
+  }
+  @https protocol https
+  header @https Strict-Transport-Security "max-age=31536000; includeSubDomains"
+  # Same-origin OIDC, using PKCE. Keycloak administration is NOT exposed publicly.
+  handle /realms/* { reverse_proxy keycloak:8080 }
+  handle /resources/* { reverse_proxy keycloak:8080 }
+  handle /admin/* { respond "Not found" 404 }
+  handle /api/* { reverse_proxy api:3000 }
+  handle /health/* { reverse_proxy api:3000 }
+  handle /openapi.json { reverse_proxy api:3000 }
+  handle /reference* { reverse_proxy api:3000 }
+  handle { reverse_proxy web:8080 }
+}

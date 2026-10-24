@@ -1,0 +1,28 @@
+name: Compose and static infrastructure gates
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  compose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Install PyYAML for duplicate-aware custom checks
+        run: python3 -m pip install --user 'PyYAML==6.0.3'
+      - name: Static Compose security
+        run: python3 scripts/check-compose-security.py
+      - name: Validate Compose with protected test secrets
+        run: |
+          scripts/init-local-secrets.sh
+          cp environments/local.env.example .env
+          docker compose --env-file .env -f compose/compose.yaml --profile tools --profile dev --profile observability config --quiet
+      - name: Scan configuration for secrets
+        run: |
+          if grep -r -nE 'BEGIN (RSA|OPENSSH) PRIVATE KEY|AKIA[0-9A-Z]{16}' compose environments; then exit 1; fi
+          echo 'Simple signature scan PASS; use dedicated gitleaks in release CI'

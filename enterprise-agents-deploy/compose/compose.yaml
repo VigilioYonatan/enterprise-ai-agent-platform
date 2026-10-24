@@ -1,0 +1,573 @@
+name: enterprise-agentops
+services:
+  postgres:
+    image: ${POSTGRES_IMAGE:-pgvector/pgvector:pg16}
+    environment:
+      POSTGRES_USER: agentops
+      POSTGRES_DB: agentops
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+    volumes:
+    - postgres_data:/var/lib/postgresql/data
+    - ./postgres-init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - pg_isready -U agentops -d agentops
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    networks:
+    - backend
+    restart: unless-stopped
+    secrets:
+    - postgres_password
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '5'
+  keycloak:
+    image: ${KEYCLOAK_IMAGE:-quay.io/keycloak/keycloak:26.8.2}
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
+      KC_DB_USERNAME: agentops
+      KC_BOOTSTRAP_ADMIN_USERNAME: local-admin
+      KC_HOSTNAME: ${APP_ORIGIN:-http://localhost:8080}
+      KC_HTTP_ENABLED: 'true'
+      APP_ORIGIN: ${APP_ORIGIN:-http://localhost:8080}
+      KEYCLOAK_START_MODE: ${KEYCLOAK_START_MODE:-dev}
+      KC_PROXY_HEADERS: xforwarded
+    volumes:
+    - ./keycloak/agentops-realm.json:/opt/keycloak/data/bootstrap/realm.template.json:ro
+    - ./keycloak/realm-init.sh:/opt/keycloak/data/bootstrap/realm-init.sh:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+    - backend
+    restart: unless-stopped
+    entrypoint:
+    - /bin/bash
+    - /opt/keycloak/data/bootstrap/realm-init.sh
+    secrets:
+    - postgres_password
+    - keycloak_admin_password
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '5'
+  mailpit:
+    image: ${MAILPIT_IMAGE:-axllent/mailpit:v1.27}
+    ports:
+    - 127.0.0.1:8025:8025
+    networks:
+    - backend
+    restart: unless-stopped
+    profiles:
+    - dev
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '5'
+  migration:
+    build:
+      context: ../../apps/enterprise-agents-impl
+      dockerfile: Dockerfile
+    command:
+    - node
+    - dist/database/migrate.js
+    environment:
+      DATABASE_URL_FILE: /run/secrets/database_url
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+    - backend
+    restart: 'no'
+    profiles:
+    - tools
+    image: ${AGENTOPS_BACKEND_IMAGE:-agentops/backend:dev}
+    secrets:
+    - database_url
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '5'
+  api:
+    volumes:
+    - ./connector-secrets:/run/connector-secrets:ro
+    build:
+      context: ../../apps/enterprise-agents-impl
+      dockerfile: Dockerfile
+    environment:
+      PORT: '3000'
+      OIDC_ISSUER: ${OIDC_ISSUER:?set OIDC_ISSUER}
+      OIDC_JWKS_URL: http://keycloak:8080/realms/agentops/protocol/openid-connect/certs
+      OIDC_AUDIENCE: agentops-api
+      CORS_ORIGIN: ${APP_ORIGIN:-http://localhost:8080}
+      DOCS_ENABLED: ${DOCS_ENABLED:-false}
+      OLLAMA_URL: http://ollama:11434
+      OLLAMA_MODEL: llama3.2:3b
+      KNOWLEDGE_EMBED_MODEL: ${KNOWLEDGE_EMBED_MODEL:-nomic-embed-text}
+      CONNECTOR_OAUTH_AUTH_URL: ${CONNECTOR_OAUTH_AUTH_URL:-}
+      CONNECTOR_OAUTH_TOKEN_URL: ${CONNECTOR_OAUTH_TOKEN_URL:-}
+      CONNECTOR_OAUTH_REVOKE_URL: ${CONNECTOR_OAUTH_REVOKE_URL:-}
+      CONNECTOR_OAUTH_CLIENT_ID: ${CONNECTOR_OAUTH_CLIENT_ID:-}
+      CONNECTOR_OAUTH_REDIRECT_URI: ${CONNECTOR_OAUTH_REDIRECT_URI:-}
+      CONNECTOR_OAUTH_SCOPES: ${CONNECTOR_OAUTH_SCOPES:-}
+      CONNECTOR_OAUTH_CLIENT_SECRET_FILE: /run/connector-secrets/client-secret
+      OAUTH_ENCRYPTION_KEY_FILE: /run/connector-secrets/aes-key
+      DATABASE_URL_FILE: /run/secrets/database_url
+    depends_on:
+      postgres:
+        condition: service_healthy
+      keycloak:
+        condition: service_started
+    healthcheck:
+      test:
+      - CMD
+      - node
+      - -e
+      - fetch('http://127.0.0.1:3000/health/live').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    read_only: true
+    tmpfs:
+    - /tmp
+    security_opt:
+    - no-new-privileges:true
+    cap_drop:
+    - ALL
+    networks:
+    - backend
+    restart: unless-stopped
+    image: ${AGENTOPS_BACKEND_IMAGE:-agentops/backend:dev}
+    secrets:
+    - database_url
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '5'
+    init: true
+    stop_grace_period: 30s
+  worker:
+    volumes:
+    - ./connector-secrets:/run/connector-secrets:ro
+    build:
+      context: ../../apps/enterprise-agents-impl
+      dockerfile: Dockerfile
+    command:
+    - node
+    - dist/worker.main.js
+    environment:
+      OLLAMA_URL: http://ollama:11434
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-llama3.2:3b}
+      KNOWLEDGE_EMBED_MODEL: ${KNOWLEDGE_EMBED_MODEL:-nomic-embed-text}
+      CONNECTOR_OAUTH_PROFILE_URL: ${CONNECTOR_OAUTH_PROFILE_URL:-}
+      CONNECTOR_OAUTH_AUTH_URL: ${CONNECTOR_OAUTH_AUTH_URL:-}
+      CONNECTOR_OAUTH_TOKEN_URL: ${CONNECTOR_OAUTH_TOKEN_URL:-}
+      CONNECTOR_OAUTH_CLIENT_ID: ${CONNECTOR_OAUTH_CLIENT_ID:-}
+      CONNECTOR_OAUTH_REDIRECT_URI: ${CONNECTOR_OAUTH_REDIRECT_URI:-}
+      CONNECTOR_OAUTH_SCOPES: ${CONNECTOR_OAUTH_SCOPES:-}
+      CONNECTOR_OAUTH_CLIENT_SECRET_FILE: /run/connector-secrets/client-secret
+      OAUTH_ENCRYPTION_KEY_FILE: /run/connector-secrets/aes-key
+      DATABASE_URL_FILE: /run/secrets/database_url
+    depends_on:
+      postgres:
+        condition: service_healthy
+    read_only: true
+    tmpfs:
+    - /tmp
+    security_opt:
+    - no-new-privileges:true
+    cap_drop:
+    - ALL
+    networks:
+    - backend
+    restart: unless-stopped
+    image: ${AGENTOPS_BACKEND_IMAGE:-agentops/backend:dev}
+    secrets:
+    - database_url
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '5'
+    init: true
+    stop_grace_period: 30s
+  evaluator:
+    build:
+      context: ../../apps/enterprise-agents-impl
+      dockerfile: Dockerfile
+    command:
+    - node
+    - dist/evaluation.main.js
+    environment:
+      OLLAMA_URL: http://ollama:11434
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-llama3.2:3b}
+      DATABASE_URL_FILE: /run/secrets/database_url
+    depends_on:
+      postgres:
+        condition: service_healthy
+    read_only: true
+    tmpfs:
+    - /tmp
+    security_opt:
+    - no-new-privileges:true
+    cap_drop:
+    - ALL
+    networks:
+    - backend
+    restart: unless-stopped
+    image: ${AGENTOPS_BACKEND_IMAGE:-agentops/backend:dev}
+    secrets:
+    - database_url
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '5'
+    init: true
+    stop_grace_period: 30s
+  knowledge-indexer:
+    profiles:
+    - llm
+    build:
+      context: ../../apps/enterprise-agents-impl
+      dockerfile: Dockerfile
+    command:
+    - node
+    - dist/knowledge.main.js
+    environment:
+      OLLAMA_URL: http://ollama:11434
+      KNOWLEDGE_EMBED_MODEL: ${KNOWLEDGE_EMBED_MODEL:-nomic-embed-text}
+      DATABASE_URL_FILE: /run/secrets/database_url
+    depends_on:
+      postgres:
+        condition: service_healthy
+    read_only: true
+    tmpfs:
+    - /tmp
+    security_opt:
+    - no-new-privileges:true
+    cap_drop:
+    - ALL
+    networks:
+    - backend
+    restart: unless-stopped
+    image: ${AGENTOPS_BACKEND_IMAGE:-agentops/backend:dev}
+    secrets:
+    - database_url
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '5'
+    init: true
+    stop_grace_period: 30s
+  outbox:
+    build:
+      context: ../../apps/enterprise-agents-impl
+      dockerfile: Dockerfile
+    command:
+    - node
+    - dist/outbox.main.js
+    environment:
+      NATS_URL: nats://nats:4222
+      DATABASE_URL_FILE: /run/secrets/database_url
+      NATS_TOKEN_FILE: /run/secrets/nats_token
+    depends_on:
+      nats:
+        condition: service_started
+      postgres:
+        condition: service_healthy
+    read_only: true
+    tmpfs:
+    - /tmp
+    security_opt:
+    - no-new-privileges:true
+    cap_drop:
+    - ALL
+    networks:
+    - backend
+    restart: unless-stopped
+    image: ${AGENTOPS_BACKEND_IMAGE:-agentops/backend:dev}
+    secrets:
+    - database_url
+    - nats_token
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '5'
+    init: true
+    stop_grace_period: 30s
+  web:
+    build:
+      context: ../../apps/enterprise-agents-web
+      dockerfile: Dockerfile
+      args:
+        VITE_OIDC_AUTHORITY: ${OIDC_AUTHORITY:?set OIDC_AUTHORITY}
+        VITE_OIDC_CLIENT_ID: agentops-web
+    read_only: true
+    tmpfs:
+    - /tmp
+    - /var/cache/nginx
+    - /var/run
+    security_opt:
+    - no-new-privileges:true
+    cap_drop:
+    - ALL
+    networks:
+    - edge
+    restart: unless-stopped
+    image: ${AGENTOPS_FRONTEND_IMAGE:-agentops/web:dev}
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '5'
+  caddy:
+    image: ${CADDY_IMAGE:-caddy:2.10-alpine}
+    volumes:
+    - ./Caddyfile:/etc/caddy/Caddyfile:ro
+    - caddy_data:/data
+    - caddy_config:/config
+    ports:
+    - ${CADDY_BIND_IP:-127.0.0.1}:${CADDY_HTTP_PORT:-8080}:80
+    - ${CADDY_BIND_IP:-127.0.0.1}:${CADDY_HTTPS_PORT:-8443}:443
+    depends_on:
+      api:
+        condition: service_healthy
+      web:
+        condition: service_started
+    networks:
+    - edge
+    - backend
+    restart: unless-stopped
+    environment:
+      CADDY_SITE_ADDRESS: ${CADDY_SITE_ADDRESS:-:80}
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '5'
+  ollama:
+    image: ${OLLAMA_IMAGE:-ollama/ollama:0.12.1}
+    profiles:
+    - llm
+    volumes:
+    - ollama_data:/root/.ollama
+    networks:
+    - backend
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '5'
+  object-storage:
+    image: ${OBJECT_STORAGE_IMAGE:-minio/minio:RELEASE.2025-09-07T16-13-09Z}
+    profiles:
+    - storage
+    command:
+    - server
+    - /data
+    - --console-address
+    - :9001
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:?set MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?set MINIO_ROOT_PASSWORD}
+    volumes:
+    - objects_data:/data
+    networks:
+    - backend
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '5'
+  prometheus:
+    image: ${PROMETHEUS_IMAGE:-prom/prometheus:v3.3.1}
+    profiles:
+    - observability
+    volumes:
+    - ./observability/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    - ./observability/rules:/etc/prometheus/rules:ro
+    - prometheus_data:/prometheus
+    networks:
+    - backend
+    - observability
+    restart: unless-stopped
+    command:
+    - --config.file=/etc/prometheus/prometheus.yml
+    - --storage.tsdb.path=/prometheus
+    - --storage.tsdb.retention.time=15d
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '5'
+  grafana:
+    image: ${GRAFANA_IMAGE:-grafana/grafana:11.6.1}
+    profiles:
+    - observability
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: 'false'
+      GF_SECURITY_ADMIN_PASSWORD__FILE: /run/secrets/grafana_admin_password
+    volumes:
+    - ./observability/grafana-datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml:ro
+    - grafana_data:/var/lib/grafana
+    - ./observability/grafana/dashboard-provisioning.yml:/etc/grafana/provisioning/dashboards/dashboards.yml:ro
+    - ./observability/grafana/dashboards:/etc/grafana/provisioning/dashboards-json:ro
+    networks:
+    - observability
+    restart: unless-stopped
+    secrets:
+    - grafana_admin_password
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '5'
+  tempo:
+    image: ${TEMPO_IMAGE:-grafana/tempo:2.7.2}
+    profiles:
+    - observability
+    command:
+    - -config.file=/etc/tempo.yaml
+    volumes:
+    - ./observability/tempo.yaml:/etc/tempo.yaml:ro
+    - tempo_data:/var/tempo
+    networks:
+    - observability
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '5'
+  otel-collector:
+    image: ${OTEL_COLLECTOR_IMAGE:-otel/opentelemetry-collector-contrib:0.126.0}
+    profiles:
+    - observability
+    command:
+    - --config=/etc/otelcol/config.yaml
+    volumes:
+    - ./observability/otel-collector.yaml:/etc/otelcol/config.yaml:ro
+    networks:
+    - backend
+    - observability
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '5'
+  nats:
+    image: ${NATS_IMAGE:-nats:2.10-alpine}
+    command:
+    - -c
+    - /etc/nats/nats.conf
+    volumes:
+    - nats_data:/data
+    networks:
+    - backend
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '5'
+    secrets:
+    - source: nats_config
+      target: /etc/nats/nats.conf
+  valkey:
+    image: ${VALKEY_IMAGE:-valkey/valkey:8.1-alpine}
+    command:
+    - valkey-server
+    - --appendonly
+    - 'yes'
+    volumes:
+    - valkey_data:/data
+    networks:
+    - backend
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '5'
+    profiles:
+    - cache
+  alertmanager:
+    image: ${ALERTMANAGER_IMAGE:-prom/alertmanager:v0.28.1}
+    profiles:
+    - observability
+    command:
+    - --config.file=/etc/alertmanager/alertmanager.yml
+    volumes:
+    - ./observability/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+    - alertmanager_data:/alertmanager
+    networks:
+    - observability
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '5'
+  blackbox:
+    image: ${BLACKBOX_IMAGE:-prom/blackbox-exporter:v0.26.0}
+    profiles:
+    - observability
+    command:
+    - --config.file=/etc/blackbox/blackbox.yml
+    volumes:
+    - ./observability/blackbox.yml:/etc/blackbox/blackbox.yml:ro
+    networks:
+    - backend
+    - observability
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '5'
+networks:
+  edge: {}
+  backend: {}
+  observability:
+    internal: true
+volumes:
+  postgres_data: null
+  nats_data: null
+  valkey_data: null
+  ollama_data: null
+  grafana_data: null
+  tempo_data: null
+  objects_data: null
+  prometheus_data: {}
+  alertmanager_data: {}
+  caddy_data: {}
+  caddy_config: {}
+secrets:
+  postgres_password:
+    file: ./secrets/postgres-password
+  database_url:
+    file: ./secrets/database-url
+  keycloak_admin_password:
+    file: ./secrets/keycloak-admin-password
+  grafana_admin_password:
+    file: ./secrets/grafana-admin-password
+  nats_token:
+    file: ./secrets/nats-token
+  nats_config:
+    file: ./secrets/nats.conf
