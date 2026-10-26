@@ -1,0 +1,57 @@
+groups:
+  - name: agentops-service-levels
+    interval: 30s
+    rules:
+      - record: agentops:http_requests:rate5m
+        expr: sum(rate(agentops_http_requests_total[5m]))
+      - record: agentops:http_errors:rate5m
+        expr: sum(rate(agentops_http_requests_total{status=~"5.."}[5m])) or vector(0)
+      - record: agentops:http_error_ratio:rate5m
+        expr: agentops:http_errors:rate5m / clamp_min(agentops:http_requests:rate5m, 0.0001)
+  - name: agentops-alerts
+    rules:
+      - alert: AgentOpsApiUnavailable
+        expr: up{job="agentops-api"} == 0
+        for: 3m
+        labels:
+          severity: critical
+          service: api
+        annotations:
+          summary: AgentOps API scrape is unavailable
+          runbook_url: https://example.invalid/runbooks/api-down
+      - alert: AgentOpsHttpBurnRateHigh
+        expr: agentops:http_error_ratio:rate5m > 0.05 and agentops:http_requests:rate5m > 0.1
+        for: 5m
+        labels:
+          severity: critical
+          service: api
+        annotations:
+          summary: API 5xx ratio exceeds 5 percent with meaningful traffic
+          runbook_url: https://example.invalid/runbooks/http-errors
+      - alert: AgentOpsHttpP95Slow
+        expr: histogram_quantile(0.95, sum by(le)(rate(agentops_http_request_duration_seconds_bucket[5m]))) > 1
+        for: 10m
+        labels:
+          severity: warning
+          service: api
+        annotations:
+          summary: Global API p95 latency exceeds 1 second
+          runbook_url: https://example.invalid/runbooks/http-latency
+      - alert: AgentOpsOutboxStalled
+        expr: agentops_outbox_oldest_unpublished_seconds > 120
+        for: 5m
+        labels:
+          severity: critical
+          service: worker
+        annotations:
+          summary: Oldest unpublished event has been pending for over two minutes
+          runbook_url: https://example.invalid/runbooks/outbox-stalled
+      - alert: AgentOpsInternalProbeFailed
+        expr: probe_success{job="blackbox-internal"} == 0
+        for: 3m
+        labels:
+          severity: critical
+          service: edge
+        annotations:
+          summary: Internal synthetic API readiness probe is failing
+          runbook_url: https://example.invalid/runbooks/readiness-probe

@@ -1,0 +1,28 @@
+rule_files:
+  - agentops.yml
+evaluation_interval: 1m
+tests:
+  - interval: 1m
+    input_series:
+      - series: 'up{job="agentops-api",instance="api:3000"}'
+        values: '1 1 1 1 1 1 1 1'
+    alert_rule_test:
+      - eval_time: 6m
+        alertname: AgentOpsApiUnavailable
+        exp_alerts: []
+  - interval: 1m
+    input_series:
+      - series: 'up{job="agentops-api",instance="api:3000"}'
+        values: '0 0 0 0 0 0 0 0'
+    alert_rule_test:
+      - eval_time: 6m
+        alertname: AgentOpsApiUnavailable
+        exp_alerts:
+          - exp_labels:
+              job: agentops-api
+              instance: api:3000
+              service: api
+              severity: critical
+            exp_annotations:
+              summary: AgentOps API scrape is unavailable
+              runbook_url: https://example.invalid/runbooks/api-down

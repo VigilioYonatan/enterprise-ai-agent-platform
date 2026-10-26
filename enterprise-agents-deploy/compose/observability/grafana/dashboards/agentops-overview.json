@@ -1,0 +1,21 @@
+{
+  "uid": "agentops-overview", "title": "AgentOps — API and Workflow Health",
+  "tags": ["agentops", "slo"], "timezone": "browser", "schemaVersion": 39,
+  "panels": [
+    {"id": 1, "type": "stat", "title": "API 5xx error ratio (5m)",
+      "datasource": {"type": "prometheus", "uid": "prometheus"}, "targets": [{"expr": "agentops:http_error_ratio:rate5m", "refId": "A"}],
+      "gridPos": {"h": 7, "w": 8, "x": 0, "y": 0}},
+    {"id": 2, "type": "timeseries", "title": "API requests/s",
+      "datasource": {"type": "prometheus", "uid": "prometheus"}, "targets": [{"expr": "sum(rate(agentops_http_requests_total[5m]))", "refId": "A"}],
+      "gridPos": {"h": 7, "w": 8, "x": 8, "y": 0}},
+    {"id": 3, "type": "timeseries", "title": "Queued Runs",
+      "datasource": {"type": "prometheus", "uid": "prometheus"}, "targets": [{"expr": "agentops_runs_queued", "refId": "A"}],
+      "gridPos": {"h": 7, "w": 8, "x": 16, "y": 0}},
+    {"id": 4, "type": "timeseries", "title": "Oldest Pending Outbox Event (seconds)",
+      "datasource": {"type": "prometheus", "uid": "prometheus"}, "targets": [{"expr": "agentops_outbox_oldest_unpublished_seconds", "refId": "A"}],
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 7}},
+    {"id": 5, "type": "timeseries", "title": "API p95 latency (seconds)",
+      "datasource": {"type": "prometheus", "uid": "prometheus"}, "targets": [{"expr": "histogram_quantile(0.95, sum by(le)(rate(agentops_http_request_duration_seconds_bucket[5m])))", "refId": "A"}],
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 7}}
+  ]
+}
