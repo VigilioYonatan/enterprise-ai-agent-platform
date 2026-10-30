@@ -1,0 +1,19 @@
+{
+  "scanned_files": 1191,
+  "classification_counts": {
+    "text": 1161,
+    "binary": 30
+  },
+  "check_counts": {
+    "UTF8_FULL_READ": 1092,
+    "YAML_PARSED_STRICT": 42,
+    "JSON_PARSED": 26,
+    "BINARY_BYTES_READ_UNRECOGNIZED": 27,
+    "WAV_OPENED_44100_FRAMES": 1,
+    "WAV_OPENED_4410_FRAMES": 1,
+    "WAV_OPENED_4189_FRAMES": 1,
+    "JSONL_PARSED": 1
+  },
+  "files_with_flags": [],
+  "notice": "This checks every file at byte and applicable format level, NOT full semantic correctness or runtime behavior."
+}
