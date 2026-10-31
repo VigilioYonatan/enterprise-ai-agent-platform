@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="AgentOps Enterprise AI Platform Logo (Dark Mode)">
+  <title>AgentOps Enterprise AI Platform</title>
+  <rect x="2" y="2" width="508" height="508" rx="90" fill="#FAFAFA" stroke="#E4E4E7" stroke-width="4" />
+  <polygon points="205,146 325,146 236,249 114,249" fill="#09090B" />
+  <polygon points="250,261 376,261 270,395 143,395" fill="#09090B" />
+  <path d="M 380 106 Q 387 144 425 151 Q 387 158 380 196 Q 373 158 335 151 Q 373 144 380 106 Z" fill="#09090B" />
+</svg>

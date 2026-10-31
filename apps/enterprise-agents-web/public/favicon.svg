@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="AgentOps Enterprise AI Platform">
+  <title>AgentOps Enterprise AI Platform</title>
+  <style>
+    .squircle { fill: #09090B; }
+    .mark { fill: #FFFFFF; }
+    @media (prefers-color-scheme: dark) {
+      .squircle { fill: #FAFAFA; }
+      .mark { fill: #09090B; }
+    }
+  </style>
+  <rect class="squircle" x="0" y="0" width="512" height="512" rx="92" />
+  <polygon class="mark" points="205,146 325,146 236,249 114,249" />
+  <polygon class="mark" points="250,261 376,261 270,395 143,395" />
+  <path class="mark" d="M 380 106 Q 387 144 425 151 Q 387 158 380 196 Q 373 158 335 151 Q 373 144 380 106 Z" />
+</svg>
