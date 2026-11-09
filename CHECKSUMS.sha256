@@ -210,7 +210,6 @@
 2bd24fb6924f1d2985f09c70b6203fc595422f6e4c53034412fb81e9145da4e2  skills/.vigilio-docs/scripts/validate-docs.mjs
 2befb6119c8e10bc67b93928270a16a7dc62cf4cd3946b12306f1866844930c5  apps/enterprise-agents-web/Dockerfile
 2c39243bc2106476348f08343a57476435c5706cfe1041f3b921851608da44a3  skills/.vigilio-docs/schemas/profile.schema.json
-2c778848ad9f42c0c4d4eba2f2d2b122d1518cf2696757698ac0a8e3e043c412  MANIFEST.sha256
 2c7fecd59bbed32cfb89a8a67db8843c9a88ba426913574db725ffcc5b074e51  apps/enterprise-agents-impl/src/modules/agents/application/service/agents.service.ts
 2cda00dc29ce921a76d2c457cf1c5d14e77cce7b399a58ea7759cf6eb9786634  apps/enterprise-agents-impl/src/shared/config/app-config.service.ts
 2ce0188ae36989db375b7886599bc75d1da828cd66f46da5008dab1e411178af  skills/.vigilio-docs/technology/libraries/tanstack-form.md
@@ -218,6 +217,7 @@
 2cf9854d806665deb5b077f17b9945dd66ff51c3026d6b4735ed623103702cda  skills/.vigilio-docs/stacks/cpp/delivery/native-ci-cd-and-release.md
 2d020b92f21cb778eda0a64f2719f60f1544913e07d984d75b145532fefcf112  apps/enterprise-agents-impl/tests/unit/http-exception-filter.test.ts
 2d131908b3be590633de0415299aa3cdbd616cf4bcaaa0ebbfab2fe027734d08  apps/enterprise-agents-impl/tests/unit/evaluation-score.test.ts
+2d43c0e8554924da96becb5a6cf3223c2fc9baf68e1f77f2b4a32b23839a734c  skills/.vigilio-docs/standards/engineering/repository-versioning-and-releases.md
 2dcfc5c455044cc1cda3a3ba3852452ff05dd2849f2066879358ad10e422b675  apps/enterprise-agents-impl/src/modules/approvals/approvals.module.ts
 2ed47d59d50d6dbe848cc0aef80491789bbc52c0419cd0a43d0486f2fa2d58e8  skills/.vigilio-docs/stacks/frontend/web-mfe/features/17-scaffold-app-feature.md
 2ef5a314ed35670f5e490028aa641b05e94176a133e88ba4705481987bec380c  apps/enterprise-agents-impl/README.md
@@ -265,6 +265,7 @@
 3611766182245fb3dd195db07db9f29d595b2a9c653ba3713b4c4431c071570f  skills/.vigilio-docs/platform/aws/platform-foundation.md
 364a214dfd183ba68bbba734655c6401ab4a2e42d6b7a111d249bca168134e4b  apps/enterprise-agents-impl/src/modules/knowledge/infrastructure/persistence/drizzle/seeders/knowledge.seeder.ts
 367afee1f980f673da61b91fb054dd7e4385cd37efeed8db6b2a726eddbc5b08  skills/.vigilio-docs/technology/libraries/expo-secure-store.md
+36b6ef8478487bb21c6181839b96ab837477d67a70edb7690b9dd8571e5893c5  README.md
 372996286cfca8eed8497322aca796d76b46e2e01604c032612db1f76edaabd6  skills/.vigilio-docs/technology/catalog/php.md
 372ef44c933e9c80261694885cc7695ec13ae35cae79045a517b18f037e3ca69  apps/enterprise-agents-impl/src/modules/runs/domain/schemas/run.schema.ts
 3755507043095a48cc55c678fdeecd6fe6647edf4ce439efa3f98581bacb411c  skills/.vigilio-docs/stacks/godot/2d/tilemaps-camera-and-world.md
@@ -300,7 +301,6 @@
 3cd37e9d3aea1d5d4e159a82009f3cf668a4569b6106c0035663a670de0c4b79  docs/assets/demos/01-workflow-dag-and-execution.gif
 3d24eba0e3b6ffb7a9c7170498ebaa38fbf6ed11c3db22c4a957a3a23195f9fd  skills/.vigilio-docs/platform/security/runtime-policies-ebpf.md
 3d416581d39e9632d727bd10017e07db75aac7ac697ff19c9ad740f3c0e28d7a  skills/.vigilio-docs/stacks/frontend/web-mfe/testing/e2e-playwright.md
-3dcb14f5de07f788549ffd4f13e2c92ea48f02224e756892bb1dc329e1c225f0  audit/FILE_AUDIT_SUMMARY.json
 3df73bacdc13601a5e523f99cfd133039e5b98ec65e4a096c825d993c61569e8  skills/.vigilio-docs/technology/baselines/ai-rag-stack-economico.md
 3e69a29c28eb3ec5a0b926f813e7c95544c2d9375fd8fe531db597a60bba1bd3  apps/enterprise-agents-impl/tests/unit/evaluations-ops-tools.test.ts
 3e6a2d2c9e093a87976463852abf02c471dcdbfe836a67e8419d05eb1bb0fe45  skills/web-mfe-contracts/SKILL.md
@@ -366,7 +366,6 @@
 4b32d8ebaecf8d87d3a9eda5909ac41305441bb68b80a635140c17b41ab0fbeb  apps/enterprise-agents-impl/src/modules/approvals/presentation/http/controllers/approvals.controller.ts
 4b99c3dd6461a2e3109f9ac9bcf098ad1c1171cc052ec649d31fabba5f9f955c  skills/.vigilio-docs/stacks/mobile/expo/features/17-scaffold-app-feature.md
 4ba1e2855b9c708daa2c7231ff6922cfc5498a3b69670bd609e33e45efdf6e1e  skills/ai-rag-llmops-finops/references/release-gates.md
-4bdd7688ea644df20cf463fd020ba1983781c521bc9ccf75e4523f7600d20ed8  skills/.vigilio-docs/standards/engineering/repository-versioning-and-releases.md
 4bde5f672a33a3512684304deb7bda7382429c010ae97448ff10f36cde84a445  docs/assets/screenshots/06-hybrid-rag-knowledge.png
 4bf2ef1ee562b2958b30ea5ed1b744eeae756804207b489da3420b0f619ea58d  skills/.vigilio-docs/standards/api/http-validators-and-dtos.md
 4c5c740eef7694f4292b466dd2d53f0fb51879fb88e65d2767189277cafc15de  skills/.vigilio-docs/platform/cloud/runtime-options.md
@@ -636,7 +635,6 @@
 87171aea375d36d085ba13d304f88fa422643bcc0e369c495f7503a412065365  skills/.vigilio-docs/standards/data/sql-performance.md
 87b323fa43e7f014ede024e7f15a782935683c00e1f469f205b241877051c305  skills/refactor-existing-code/SKILL.md
 87bdca40947ebefdda0ab504379976939e7ecaf02812bcf1ea4496e6e359a03c  apps/enterprise-agents-impl/migrations/0011_evaluation_pin.sql
-87fae5d3fe014f422051230425bd38c58d461a201157c101c9cc1775ad846841  README.md
 882fe020d5691b90313f1d8833e943a4864ad2577760bcb6a2692c72fdb97727  skills/.vigilio-docs/standards/experience/motion-feedback-and-haptics.md
 886dfb49fa33facd667ec06ea8aabd2ee10bd5cbd82827d29d1237bedf6785a2  docs/assets/logo-light.png
 8919ff7499cc4294d0dd91cac8bb6bbc74307e7f4b25d45ad15b22beb0582a3d  skills/.vigilio-docs/stacks/backend/nestjs/architecture/references/2-arquitectura.md
@@ -708,7 +706,6 @@
 97cbcef607ee21e41f3e434a34a9a601ce9b84299fb3104a0496b3c227c1f643  docs/assets/screenshots/05-four-eyes-approval.png
 9820b057c3c143b4138cd74cc3c94f65c706c465d1be16eee7b926793feec5a4  skills/platform-repository-workspace/references/canonical-contract.md
 98a1458e45be8804dd5d54c439abd7b1d277e8402f9377144c9d6b07db81665c  apps/enterprise-agents-impl/src/shared/telemetry/metrics.ts
-98b1ddffc7dded9e8c763257273803c144fbd72229af6f5781180687da2e00d5  docs/GITHUB_RELEASE_0.1.0-beta.md
 98bcb19114193c416ede6ab544ca2b45ab4f8a5b40ae9ab9a3b03cd039e6bcbd  apps/enterprise-agents-impl/src/modules/workflows/domain/schemas/workflow.schema.ts
 98c2d5b2c035decf009c831f77ac4e516b1d5ee968bcd286a4d20fe137b7e340  apps/enterprise-agents-impl/src/database/seeders/run-approval.seeder.ts
 993f38d43daef549c15fb0742a4c2b7072206d1f6d8cd38ef29ca0d657f2e09f  skills/ui-design-system/references/execution.md
@@ -742,6 +739,7 @@
 a0060f83385d5a5c6a9a98b45cbeabc13d8d28e35106bbdf51995fdb8a40d11e  skills/ux-information-architecture/SKILL.md
 a03683f4776a8eb34f2b8c0f6a4b5f1c624a5541136306552ca0b445e8931d7b  skills/.vigilio-docs/schemas/platform-context.schema.json
 a04650d69975ae89f3c204f93e27b36b9b96beee2ff2687481e55f3eaeb7fa6b  apps/enterprise-agents-impl/package.json
+a08bca82bbd95383788142b3c9ed1ea0310edc6c094d69001955665485f1146c  audit/FILE_AUDIT_SUMMARY.json
 a0bcddd3fb112583431bfc0ff9b0dbbccc3d55824791f8824bfb32609d92bd3c  skills/.vigilio-docs/playbooks/production-readiness.md
 a0c773e79e87e5eedcb86f3d8720ce39367e010d766d95d73346a9bfc4ea138f  apps/enterprise-agents-impl/src/shared/health/health.controller.ts
 a0ea7abcca759548616162352d837dac813c27b1f5e5b39fd8033454bab70b72  skills/.vigilio-docs/standards/data/governance.md
@@ -823,6 +821,7 @@ b2b39669a74ee6c06ae8d72d4a2f4b1c5f8948b977dff0787630ca8b5b83e30b  skills/.vigili
 b32225371b4d288120eb501aa958bbe60bb29110cd31b7f8c5f1f9f273222210  skills/.vigilio-docs/examples/godot-2d-jump-audio/scripts/jump_rules.gd
 b3789e48bfef889c7a4e48bac127923eedc1dd4571501b9874de172cbbe9b9b3  skills/.vigilio-docs/stacks/godot/README.md
 b3da28a2fc58d16fd82da55c7532427c63c45724a8e447d4b40e95918bea8793  skills/.vigilio-docs/technology/libraries/socket-io.md
+b44ae2afaa26787eaea838573faedf68d4124cc3a648e867f52b460e7aa8990c  skills/readme-visual-showcase-and-versioning/references/repository-versioning-and-releases.md
 b488f2a1db7183cd8ec654dedd426c05485f2307be2e93159d309deaba370cc1  skills/.vigilio-docs/examples/godot-2d-jump-audio/scripts/player.gd
 b4a46b7657e133def6f50008669b280ef81297a59abd99f9e3d9987db6826634  skills/.vigilio-docs/standards/devsecops/supply-chain.md
 b4c7ea70f6a01d1eeb36a1d70dd14b8cd66723784990c844a7b965b5a9e78078  apps/enterprise-agents-impl/src/modules/evaluations/infrastructure/persistence/drizzle/evaluation.table.ts
@@ -905,7 +904,6 @@ c3ee8aeca5ab436dd5feea20daf299d0e62561a88c1895e8066fc603db4d95b7  skills/platfor
 c41f7cf1913d39b836021ade0253882a738a56d7d57c9ec76a9ecb16199aab15  skills/.vigilio-docs/stacks/rust/core/module-symbol-ownership.md
 c443eb6be396369f8f7e46c51f4e5094b4f9c54636be01565018421d08978a53  skills/.vigilio-docs/stacks/mobile/expo/contracts/1-contratos-zod-formularios-tanstack.md
 c47ea5a19505244110f90ad259e0c887cb9865ee6711e38e0c2a84344a39db33  skills/.vigilio-docs/technology/libraries/php.md
-c4839be57e84e780fa6f61098f54b4ebf18af7c65522d759af3b9d8d0ea84e65  skills/readme-visual-showcase-and-versioning/references/repository-versioning-and-releases.md
 c50b79c05a84ed8fe8f8a2f0e359f1f66c0d2d6c32c160a9e0d73e1a7b8e21aa  skills/.vigilio-docs/platform/iac/testing.md
 c516731c28cdd11b3c7e0ffc710e8d7bfd8691da19fca758901f698fedfa9fd4  apps/enterprise-agents-impl/src/modules/approvals/infrastructure/persistence/drizzle/seeders/approval.seeder.ts
 c546aefa807e07fa8c2b380fbe42a730080ce74031a85505f3f03eb5ca06817b  skills/node-nest-testing/SKILL.md
@@ -1124,6 +1122,7 @@ f1c5ca7d547e5d6ef62c27d5aa87469b8c01581ffb88546000d922362dff31fa  skills/.vigili
 f1d57bc3ae584e730f4d628cc14b34b9d8a7196250e497bd9d6fd4c07a91831e  skills/.vigilio-docs/platform/environments/artifact-promotion.md
 f1f8ce42e7f7dba824c0701109f46c6c93424435bfec55f9de4a8ac883ff4988  apps/enterprise-agents-web/public/favicon.svg
 f20eca4e8144ff880696402269d85212000392b21b7dedbb7a40a45cf5ec224d  skills/.vigilio-docs/foundations/README.md
+f22573f24c28b46218fbc52dfd11a6bd5da5a35f5f526b5c3f8ab7de6f5adf60  docs/GITHUB_RELEASE_0.1.0-beta.md
 f244548ccabe197b05dc2d5977102b99abbe2b561ebe24c996b4a222614d9f34  apps/enterprise-agents-impl/src/modules/usage/application/types/usage.type.ts
 f259d3c23dea1173894f759f5ab471d87ebc26e0f71bd18eaa5a8642b5e10316  skills/web-mfe-security-delivery/SKILL.md
 f29cc45628cfd031d4dd58a8b8649f00d31d5fdc10f6591eed62762ef3b12784  apps/enterprise-agents-impl/src/modules/notifications/application/service/notifications.service.ts
@@ -1180,6 +1179,7 @@ fc3793d17ac723a87e826e8c7d8395cd076994cac929a3191b3d44e1013c1dc0  skills/.vigili
 fc5686393acd45c68d9ebf8bc70d75e92463f54eca98c57d4499c48bad1ff684  skills/.vigilio-docs/platform/cicd/README.md
 fc5f59fc4b0ed97f49c768447a37a2bb9b703c1e942d86389454750ba9583873  prod-local/scripts/validate-static.py
 fcdd3504f74956d6f7121e8e053915efcbb1e9cbfcb329652b6be8a6389f41c1  skills/.vigilio-docs/stacks/backend/nestjs/http/references/32-uploads-s3-presigned.md
+fce10c4c4b47957f18be2d6cdcdbe5040f16e6ec6dadda1ca1ad247e47510957  MANIFEST.sha256
 fcf52e1b579a79dc0f39a3e728405572c29bfd424732a3ef3cbe1cdc86d2b7c6  skills/.vigilio-docs/stacks/frontend/web-mfe/technology/18-frontend-technologies-skill-2026.md
 fe1c71bb9a2e5b86fe44472d4d365072adb499acc2c5718dd7e28b8ce2836dd9  skills/.vigilio-docs/technology/libraries/expo-image-picker.md
 fe3bb01708e752921ba2b02cfe572b8f206438b32a70b897cd34435ad58d8685  skills/.vigilio-docs/platform/iac/terraform-delivery.md

@@ -7,7 +7,7 @@ Use the exact values below when configuring the **GitHub Repository "About" side
 ## 1. GitHub Repository "About" Description (<= 160 characters)
 
 ```text
-Self-hosted AI assistants & visual workflows with human approvals, private document search, and Dark/Light UI (v0.1.0-beta).
+Self-hosted enterprise AI agent orchestration: automate critical workflows with cryptographic human approvals, private hybrid RAG, and zero cloud leaks.
 ```
 
 ### Suggested GitHub Topics

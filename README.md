@@ -15,8 +15,8 @@
     <a href="CHANGELOG.md">Changelog (0.1.0-beta)</a>
   </p>
 
-  <p><b>Create AI assistants, connect them into visual workflows, and approve important actions before they run — privately on your own computer or server.</b></p>
-  <p>Give each assistant clear instructions, let it search your team's private documents, pause sensitive steps so a teammate can review them first, and see a clear timeline of everything that happened.</p>
+  <p><b>Enterprise AI agent orchestration with cryptographic human approvals, private hybrid RAG, and zero cloud data leaks.</b></p>
+  <p>Automate mission-critical workflows with autonomous assistants, enforce mandatory second-pair-of-eyes approvals before sensitive tools execute, search private company playbooks with citation scoring, and maintain immutable audit traces — 100% self-hosted on your own infrastructure.</p>
 
   <p>
     <img src="https://img.shields.io/badge/version-0.1.0--beta-2563EB?style=flat-square" alt="Version 0.1.0-beta" />
@@ -46,12 +46,16 @@
 
 ---
 
-## Why Teams Use AgentOps
+## The Enterprise Problem We Solve
 
-- **Visual Workflows Anyone Can Follow:** Map out how tasks move from start to finish on a clean visual canvas instead of hiding logic inside complex scripts.
-- **A Second Pair of Eyes When It Matters:** Whenever an assistant wants to read sensitive records or run an important action, AgentOps pauses automatically and waits for a teammate's approval.
-- **Answers Grounded in Your Own Docs:** Upload internal guides and playbooks, choose who on your team can read each document, and get fast answers with clear links back to the source page.
-- **Run History You Can Trust:** Every workflow run saves what happened at each step, how long it took, and who approved what.
+Enterprises seeking to deploy autonomous AI agents into mission-critical operations face four blocking barriers to production:
+
+| Enterprise Roadblock | Security & Compliance Risk | How AgentOps Solves It |
+| :--- | :--- | :--- |
+| **1. Cloud Data Exfiltration** | Sending confidential runbooks, proprietary schemas, and customer PII to third-party multi-tenant AI clouds violates SOC 2, HIPAA, and GDPR boundaries. | **100% Sovereign & Air-Gapped Architecture:** Runs entirely within your private infrastructure. Vector embeddings, document stores, and local LLM inference (Ollama / vLLM) operate without external cloud dependencies. |
+| **2. Unsupervised Destructive Actions** | Autonomous agents equipped with API credentials or database access can trigger unintended irreversible changes in production environments without oversight. | **Cryptographic Four-Eyes Approval (HITL):** Critical tool invocations automatically pause execution. A human operator must review the structured payload and cryptographically sign off before execution resumes. |
+| **3. Knowledge Access Control Bypasses** | Naive RAG pipelines index documents into a shared vector store, allowing unauthorized employees or contractors to retrieve executive, legal, or HR records. | **Tenant-Scoped & Role-Based Document ACLs:** Chunks inherit strict multi-tenant boundaries and user permission levels enforced at the database layer with zero bypass risk. |
+| **4. Zero Compliance Traceability** | Ephemeral chat logs provide no legal non-repudiation or forensic evidence of who authorized an action, when it ran, or what data was accessed. | **Tamper-Evident Run & Step Audit Ledger:** Every workflow step, tool call, latency metric, and approval record is persisted in an immutable audit trace ready for compliance scrutiny. |
 
 ---
 

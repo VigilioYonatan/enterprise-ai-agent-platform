@@ -33,7 +33,7 @@ Siempre que el usuario indique la versión actual del proyecto (como `0.1.0-beta
 
 ### Descripción "About" del Repositorio en GitHub
 ```text
-Self-hosted AI assistants & visual workflows with human approvals, private document search, and Dark/Light UI (v0.1.0-beta).
+Self-hosted enterprise AI agent orchestration: automate critical workflows with cryptographic human approvals, private hybrid RAG, and zero cloud leaks.
 ```
 
 ### Sección de Descarga Clara para Cualquier Usuario en `README.md`

@@ -46,7 +46,7 @@ Cuando un usuario entra a GitHub, toma tres decisiones en menos de 15 segundos: 
 Documentar siempre (ej. en `docs/GITHUB_RELEASE_<version>.md` o automatizado vía `gh repo edit`) la descripción corta (`<= 160` caracteres) libre de jerga críptica e incluyendo el estado/versión cuando está en Beta:
 
 ```text
-Self-hosted AI assistants & visual workflows with human approvals, private document search, and Dark/Light UI (v0.1.0-beta).
+Self-hosted enterprise AI agent orchestration: automate critical workflows with cryptographic human approvals, private hybrid RAG, and zero cloud leaks.
 ```
 
 ### 3.2. Badges de Versión + Botón de Descarga en el Hero del `README.md`
